@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -41,6 +43,5 @@ app.post("/api/book-meeting", async (req, res) => {
   }
 
 });
-
 
 app.listen(5000, () => console.log("Backend running on 5000"));

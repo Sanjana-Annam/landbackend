@@ -1,16 +1,17 @@
+require("dotenv").config();
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "sanjanaannam87@gmail.com",
-    pass: "gqpe evbl bfxt lnsz"
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
   }
 });
 
 exports.sendAdminEmail = async (data) => {
   await transporter.sendMail({
-    to: "sanjanaannam87@gmail.com",
+    to: process.env.EMAIL_USER,
     subject: "New Booking from Website",
     html: `
       <h3>New Client Booking</h3>
