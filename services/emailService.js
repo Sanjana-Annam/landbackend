@@ -1,67 +1,50 @@
 require("dotenv").config();
-const nodemailer = require("nodemailer");
-
-
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  },
-  tls: {
-    rejectUnauthorized: false
-  }
-});
-transporter.verify(function (error, success) {
-  if (error) {
-    console.log("SMTP Connection Error:", error);
-  } else {
-    console.log("SMTP Server is ready to send emails");
-  }
-});
-
+const emailjs = require("@emailjs/nodejs");
 
 exports.sendAdminEmail = async (data) => {
   try {
-    await transporter.sendMail({
-      to: process.env.EMAIL_USER,
-      subject: "New Booking from Website",
-      html: `
-        <h3>New Client Booking</h3>
-        <p>Name: ${data.name}</p>
-        <p>Phone: ${data.phone}</p>
-        <p>Email: ${data.email}</p>
-        <p>Slot: ${data.date} - ${data.time}</p>
-        <p>Mode: ${data.mode}</p>
-      `
-    });
+    await emailjs.send(
+      process.env.EMAILJS_SERVICE_ID,
+      process.env.EMAILJS_TEMPLATE_ADMIN,
+      {
+        name: data.name,
+        phone: data.phone,
+        email: data.email,
+        date: data.date,
+        time: data.time,
+        mode: data.mode,
+      },
+      {
+        publicKey: process.env.EMAILJS_PUBLIC_KEY,
+      }
+    );
 
-    console.log("Admin Email Sent Successfully");
+    console.log("Admin Email Sent via EmailJS");
 
   } catch (error) {
-    console.log("Admin Email Error:", error.message);
+    console.log("Admin EmailJS Error:", error);
   }
 };
 
 exports.sendClientEmail = async (data) => {
   try {
-    await transporter.sendMail({
-      to: data.email,
-      subject: "Booking Confirmed – Jiph Furniture",
-      html: `
-        <h3>Hi ${data.name}</h3>
-        <p>Your meeting is confirmed.</p>
-        <p>Date: ${data.date}</p>
-        <p>Time: ${data.time}</p>
-        <p>Mode: ${data.mode}</p>
-      `
-    });
+    await emailjs.send(
+      process.env.EMAILJS_SERVICE_ID,
+      process.env.EMAILJS_TEMPLATE_CLIENT,
+      {
+        name: data.name,
+        date: data.date,
+        time: data.time,
+        mode: data.mode,
+      },
+      {
+        publicKey: process.env.EMAILJS_PUBLIC_KEY,
+      }
+    );
 
-    console.log("Client Email Sent Successfully");
+    console.log("Client Email Sent via EmailJS");
 
   } catch (error) {
-    console.log("Client Email Error:", error.message);
+    console.log("Client EmailJS Error:", error);
   }
 };
