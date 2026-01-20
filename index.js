@@ -17,35 +17,38 @@ app.post("/api/book-meeting", async (req, res) => {
 
   const data = req.body;
 
+  console.log("New Booking Request:", data);
+
+  // --- SEND EMAILS FIRST (MOST IMPORTANT) ---
   try {
+    await sendAdminEmail(data);
+    await sendClientEmail(data);
+    console.log("Emails Sent Successfully");
+  } catch (emailError) {
+    console.log("Email Error:", emailError.message);
+  }
 
-    console.log("New Booking Request:", data);
+  // --- SEND WHATSAPP ---
+  try {
+    await sendAdminWhatsApp(data);
+    console.log("Admin WhatsApp Sent");
+  } catch (whatsappError) {
+    console.log("WhatsApp Error:", whatsappError.message);
+  }
 
-    // 1️⃣ SAVE TO GOOGLE SHEET FIRST
+  // --- SAVE TO GOOGLE SHEET (LAST, NON-CRITICAL) ---
+  try {
     await axios.post(
       "https://script.google.com/macros/s/AKfycbyMWCj0H_WwTK_zZ9zCArjwC5dHAfNeCr-_Ttolrzh9jhdyNaqhLa3UwP_0mKk7Sehy/exec",
       data
     );
-
     console.log("Saved to Google Sheet");
-
-    // 2️⃣ SEND EMAILS
-    await sendAdminEmail(data);
-    await sendClientEmail(data);
-
-    console.log("Emails Sent");
-
-    // 3️⃣ SEND ADMIN WHATSAPP ONLY
-    await sendAdminWhatsApp(data);
-
-    console.log("Admin WhatsApp Sent");
-
-    res.json({ success: true });
-
-  } catch (error) {
-    console.log("Booking Error:", error.message);
-    res.status(500).json({ success: false });
+  } catch (sheetError) {
+    console.log("Google Sheet Error:", sheetError.message);
   }
+
+  // Always return success so frontend can redirect
+  res.json({ success: true });
 
 });
 
