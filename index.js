@@ -13,7 +13,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-app.post("/api/book-meeting", async (req, res) => {
+app.post("https://landbackend-q5xj.onrender.com/api/book-meeting", async (req, res) => {
 
   const data = req.body;
 
