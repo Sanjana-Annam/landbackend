@@ -5,7 +5,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const axios = require("axios");
 
-const { sendAdminEmail, sendClientEmail } = require("./services/emailService");
+
 const { sendAdminWhatsApp } = require("./services/whatsappService");
 
 const app = express();
@@ -20,13 +20,7 @@ app.post("/api/book-meeting", async (req, res) => {
   console.log("New Booking Request:", data);
 
   // 1️⃣ SEND EMAILS FIRST
-  try {
-    await sendAdminEmail(data);
-    await sendClientEmail(data);
-    console.log("Emails Sent Successfully");
-  } catch (emailError) {
-    console.log("Email Error:", emailError.message);
-  }
+ 
 
   // 2️⃣ SAVE TO GOOGLE SHEET
   try {
