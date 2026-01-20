@@ -6,7 +6,7 @@ console.log("===== EMAILJS DEBUG INFO =====");
 console.log("SERVICE ID:", process.env.EMAILJS_SERVICE_ID || "NOT FOUND");
 console.log("TEMPLATE ADMIN:", process.env.EMAILJS_TEMPLATE_ADMIN || "NOT FOUND");
 console.log("TEMPLATE CLIENT:", process.env.EMAILJS_TEMPLATE_CLIENT || "NOT FOUND");
-console.log("PUBLIC KEY:", process.env.EMAILJS_PUBLIC_KEY ? "EXISTS" : "NOT FOUND");
+console.log("PRIVATE KEY:", process.env.EMAILJS_PRIVATE_KEY ? "EXISTS" : "NOT FOUND");
 console.log("================================");
 
 exports.sendAdminEmail = async (data) => {
@@ -15,7 +15,7 @@ exports.sendAdminEmail = async (data) => {
 
     if (!process.env.EMAILJS_SERVICE_ID ||
         !process.env.EMAILJS_TEMPLATE_ADMIN ||
-        !process.env.EMAILJS_PUBLIC_KEY) {
+        !process.env.EMAILJS_PRIVATE_KEY) {
       console.log("❌ EMAILJS ENV VARIABLES MISSING FOR ADMIN EMAIL");
       return;
     }
@@ -45,7 +45,7 @@ exports.sendAdminEmail = async (data) => {
       process.env.EMAILJS_TEMPLATE_ADMIN,
       params,
       {
-        publicKey: process.env.EMAILJS_PUBLIC_KEY,
+        privateKey: process.env.EMAILJS_PRIVATE_KEY,
       }
     );
 
@@ -66,7 +66,7 @@ exports.sendClientEmail = async (data) => {
 
     if (!process.env.EMAILJS_SERVICE_ID ||
         !process.env.EMAILJS_TEMPLATE_CLIENT ||
-        !process.env.EMAILJS_PUBLIC_KEY) {
+        !process.env.EMAILJS_PRIVATE_KEY) {
       console.log("❌ EMAILJS ENV VARIABLES MISSING FOR CLIENT EMAIL");
       return;
     }
@@ -90,7 +90,7 @@ exports.sendClientEmail = async (data) => {
       process.env.EMAILJS_TEMPLATE_CLIENT,
       params,
       {
-        publicKey: process.env.EMAILJS_PUBLIC_KEY,
+        privateKey: process.env.EMAILJS_PRIVATE_KEY,
       }
     );
 
