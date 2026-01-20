@@ -1,3 +1,18 @@
+require("dotenv").config();
+
+const express = require("express");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const axios = require("axios");
+
+const { sendAdminEmail, sendClientEmail } = require("./services/emailService");
+const { sendAdminWhatsApp } = require("./services/whatsappService");
+
+const app = express();
+
+app.use(cors());
+app.use(bodyParser.json());
+
 app.post("/api/book-meeting", async (req, res) => {
 
   const data = req.body;
@@ -27,8 +42,7 @@ app.post("/api/book-meeting", async (req, res) => {
   // 3️⃣ IMMEDIATELY RETURN RESPONSE TO FRONTEND
   res.json({ success: true });
 
-  // 4️⃣ AFTER RESPONSE – SEND WHATSAPP IN BACKGROUND
-  // This runs asynchronously so user is not blocked
+  // 4️⃣ SEND WHATSAPP IN BACKGROUND (NON BLOCKING)
   (async () => {
     try {
       await sendAdminWhatsApp(data);
@@ -39,3 +53,7 @@ app.post("/api/book-meeting", async (req, res) => {
   })();
 
 });
+
+// START SERVER
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Backend running on ${PORT}`));
